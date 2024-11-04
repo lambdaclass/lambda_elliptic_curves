@@ -548,7 +548,6 @@ impl<const NUM_LIMBS: usize> UnsignedInteger<NUM_LIMBS> {
                 limbs[i] = self.limbs[a + i];
                 i += 1;
             }
-            Self { limbs }
         } else {
             limbs[NUM_LIMBS - 1 - a] = self.limbs[NUM_LIMBS - 1] << b;
             let mut i = a + 1;
@@ -557,8 +556,8 @@ impl<const NUM_LIMBS: usize> UnsignedInteger<NUM_LIMBS> {
                     | (self.limbs[NUM_LIMBS - i + a] >> (64 - b));
                 i += 1;
             }
-            Self { limbs }
         }
+        Self { limbs }
     }
 
     pub const fn const_shr(self, times: usize) -> UnsignedInteger<NUM_LIMBS> {
@@ -576,7 +575,6 @@ impl<const NUM_LIMBS: usize> UnsignedInteger<NUM_LIMBS> {
                 limbs[a + i] = self.limbs[i];
                 i += 1;
             }
-            Self { limbs }
         } else {
             limbs[a] = self.limbs[0] >> b;
             let mut i = a + 1;
@@ -584,8 +582,9 @@ impl<const NUM_LIMBS: usize> UnsignedInteger<NUM_LIMBS> {
                 limbs[i] = (self.limbs[i - a - 1] << (64 - b)) | (self.limbs[i - a] >> b);
                 i += 1;
             }
-            Self { limbs }
         }
+
+        Self { limbs }
     }
 
     pub const fn add(
