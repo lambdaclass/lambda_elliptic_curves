@@ -8,6 +8,10 @@ use crate::field::{
 #[cfg(feature = "lambdaworks-serde-binary")]
 use crate::traits::ByteConversion;
 
+#[cfg(feature = "lambdaworks-serde-binary")]
+#[cfg(feature = "alloc")]
+use crate::traits::AsBytes;
+
 /// We are implementig the extension of Baby Bear of degree 4 using the irreducible polynomial x^4 + 11.
 /// BETA = 11 and -BETA = -11 is the non-residue.
 pub const BETA: FieldElement<Babybear31PrimeField> =
@@ -259,6 +263,59 @@ impl ByteConversion for [FieldElement<Babybear31PrimeField>; 4] {
         let x3 = FieldElement::from_bytes_le(&bytes[BYTES_PER_FIELD * 3..BYTES_PER_FIELD * 4])?;
 
         Ok([x0, x1, x2, x3])
+    }
+}
+
+#[cfg(feature = "lambdaworks-serde-binary")]
+impl ByteConversion for FieldElement<Degree4BabyBearExtensionField> {
+    fn to_bytes_be(&self) -> alloc::vec::Vec<u8> {
+        let mut byte_slice = ByteConversion::to_bytes_be(&self.value()[0]);
+        byte_slice.extend(ByteConversion::to_bytes_be(&self.value()[1]));
+        byte_slice.extend(ByteConversion::to_bytes_be(&self.value()[2]));
+        byte_slice.extend(ByteConversion::to_bytes_be(&self.value()[3]));
+        byte_slice
+    }
+
+    fn to_bytes_le(&self) -> alloc::vec::Vec<u8> {
+        let mut byte_slice = ByteConversion::to_bytes_le(&self.value()[0]);
+        byte_slice.extend(ByteConversion::to_bytes_le(&self.value()[1]));
+        byte_slice.extend(ByteConversion::to_bytes_le(&self.value()[2]));
+        byte_slice.extend(ByteConversion::to_bytes_le(&self.value()[3]));
+        byte_slice
+    }
+
+    fn from_bytes_be(bytes: &[u8]) -> Result<Self, crate::errors::ByteConversionError>
+    where
+        Self: Sized,
+    {
+        const BYTES_PER_FIELD: usize = 8;
+        let x0 = FieldElement::from_bytes_be(&bytes[0..BYTES_PER_FIELD])?;
+        let x1 = FieldElement::from_bytes_be(&bytes[BYTES_PER_FIELD..BYTES_PER_FIELD * 2])?;
+        let x2 = FieldElement::from_bytes_be(&bytes[BYTES_PER_FIELD * 2..BYTES_PER_FIELD * 3])?;
+        let x3 = FieldElement::from_bytes_be(&bytes[BYTES_PER_FIELD * 3..BYTES_PER_FIELD * 4])?;
+
+        Ok(Self::new([x0, x1, x2, x3]))
+    }
+
+    fn from_bytes_le(bytes: &[u8]) -> Result<Self, crate::errors::ByteConversionError>
+    where
+        Self: Sized,
+    {
+        const BYTES_PER_FIELD: usize = 8;
+        let x0 = FieldElement::from_bytes_le(&bytes[0..BYTES_PER_FIELD])?;
+        let x1 = FieldElement::from_bytes_le(&bytes[BYTES_PER_FIELD..BYTES_PER_FIELD * 2])?;
+        let x2 = FieldElement::from_bytes_le(&bytes[BYTES_PER_FIELD * 2..BYTES_PER_FIELD * 3])?;
+        let x3 = FieldElement::from_bytes_le(&bytes[BYTES_PER_FIELD * 3..BYTES_PER_FIELD * 4])?;
+
+        Ok(Self::new([x0, x1, x2, x3]))
+    }
+}
+
+#[cfg(feature = "lambdaworks-serde-binary")]
+#[cfg(feature = "alloc")]
+impl AsBytes for FieldElement<Degree4BabyBearExtensionField> {
+    fn as_bytes(&self) -> alloc::vec::Vec<u8> {
+        self.to_bytes_be()
     }
 }
 
