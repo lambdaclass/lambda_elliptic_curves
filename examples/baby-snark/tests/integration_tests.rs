@@ -24,7 +24,7 @@ fn size_not_pow2() {
     let input: &[i64] = &[1, 2, 3, 4, 5];
 
     let witness = i64_vec_to_field(&[3, 4, 5]);
-    let public = i64_vec_to_field(&[1, 2]);
+    let public = i64_vec_to_field(&[1, 2]); // Note that the first element must be 1.
     let input_field = i64_vec_to_field(input);
     let u_field = normalize(i64_matrix_to_field(u), &input_field);
 
@@ -39,8 +39,8 @@ fn and_gate() {
         i64_vec_to_field(&[-1, 0, 0, 2]),
         i64_vec_to_field(&[-1, 2, 2, -4]),
     ];
-    let witness = i64_vec_to_field(&[1, 1, 1]);
-    let public = i64_vec_to_field(&[1]);
+    let witness = i64_vec_to_field(&[1, 1, 1]); // [input_1, input_2, output]
+    let public = i64_vec_to_field(&[1]); // This must be 1.
 
     test_integration(u, witness, public)
 }

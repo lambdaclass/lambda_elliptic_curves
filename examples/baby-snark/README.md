@@ -24,6 +24,8 @@ Below is a simple example demonstrating the usage of BabySnark:
     let ssp = SquareSpanProgram::from_scs(SquareConstraintSystem::from_matrix(u, public.len()));
 ```
 
+*Note:* You must ensure that the first element of the `input` is 1. In the code above we can see how to build a Span Program for an And Gate. There, the variable `witness` is of the form `[input_1, input_2, output]` (which satisfy `input_1 ∧ input_2 = output`) and the `public` variable must be `[1]`.
+
 **Step 2:** Setup Proving and Verification Keys:
 ```rust
     let (pk, vk) = setup(&ssp);

@@ -10,6 +10,7 @@ pub struct Proof {
 #[derive(Debug)]
 pub enum Error {
     WrongWitness,
+    FirstInputElementIsNotOne,
 }
 
 pub struct Prover;
@@ -19,6 +20,9 @@ impl Prover {
         ssp: &SquareSpanProgram,
         pk: &ProvingKey,
     ) -> Result<Proof, Error> {
+        if inputs[0].ne(&FrElement::one()) {
+            return Err(Error::FirstInputElementIsNotOne);
+        }
         if !ssp.check_valid(inputs) {
             return Err(Error::WrongWitness);
         }
